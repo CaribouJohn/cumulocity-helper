@@ -8,95 +8,104 @@ export class CumulocityView implements vscode.TreeDataProvider<CumulocityTreeIte
     private _onDidChangeTreeData: vscode.EventEmitter<CumulocityTreeItem | undefined> = new vscode.EventEmitter<CumulocityTreeItem | undefined>();
     readonly onDidChangeTreeData: vscode.Event<CumulocityTreeItem | undefined> = this._onDidChangeTreeData.event;
 
-    private workspaceList: CumulocityTreeItem[] = [];
+    public static cumulocityKey: string = "cumulocity.data";
+    public static tenantsKey: string = "tenantsKey";
+    private static reference: CumulocityTreeItem = new CumulocityTreeItem("ref", "ref", "ref");
 
+    private workspaceList: CumulocityTreeItem[] = [];
     constructor(private context: vscode.ExtensionContext) {
         //undefined means that there is no folder open and so we should indicate this in the view.
         this.registerCommands(); //do this regardless
-        if (vscode.workspace.workspaceFolders) {
-            vscode.workspace.workspaceFolders.forEach((ws) => {
-                let cfg = vscode.workspace.getConfiguration("cumulocity", ws.uri);
-                console.log("CFG", ws, cfg.get("host"));
-                this.workspaceList.push(
-                    new CumulocityTreeItem(
-                        ws.name,
-                        vscode.TreeItemCollapsibleState.Collapsed,
-                        context.asAbsolutePath("resources"),
-                        "workspace",
-                        undefined
-                    )
-                );
+    }
+
+    public async createTenantRecord() {
+        const tenantURL: string | undefined = await vscode.window.showInputBox({
+            placeHolder: "enter cumulocity tenant url",
+            prompt: "Enter the tenant, E.G. https://demo.cumulocity.com/",
+        });
+        if (tenantURL) {
+            const user: string | undefined = await vscode.window.showInputBox({
+                placeHolder: "enter user",
+                prompt: "Enter tenant user name (Case sensitive), E.G user@softwareag.com",
             });
-        } else {
-            this.workspaceList.push(
-                new CumulocityTreeItem(
-                    "Please open folder or workspace",
-                    vscode.TreeItemCollapsibleState.None,
-                    context.asAbsolutePath("resources"),
-                    "placeholder",
-                    undefined
-                )
-            );
+            if (user) {
+                const password: string | undefined = await vscode.window.showInputBox({
+                    placeHolder: "******",
+                    password: true,
+                    prompt: "Enter password (Securely stored)",
+                });
+                if (password) {
+                    //store it
+                    this.context.secrets.store(`${tenantURL}@${user}`, password);
+
+                    let c: CumulocityTreeItem = new CumulocityTreeItem(tenantURL, `${tenantURL}@${user}`, "workspace");
+
+                    //c.context = this.context;
+
+                    if (this.workspaceList) {
+                        this.workspaceList.push(c);
+                    } else {
+                        this.workspaceList = [c];
+                    }
+
+                    try {
+                        console.log(JSON.stringify(this.workspaceList));
+                        this.context.workspaceState.update(CumulocityView.cumulocityKey, this.workspaceList);
+                        console.log("value added");
+                        this.refresh();
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+            }
         }
     }
 
-    registerCommands(): void {
+    public async deleteTenantRecord(tbd: CumulocityTreeItem) {
+        //remove password it
+        this.context.secrets.delete(tbd.detail);
+
+        if (this.workspaceList) {
+            this.workspaceList.splice(this.workspaceList.indexOf(tbd), 1);
+            this.context.workspaceState.update(CumulocityView.cumulocityKey, this.workspaceList).then(() => {
+                console.log("value deleted");
+                this.refresh();
+            });
+        }
+        this.refresh();
+    }
+
+    async registerCommands(): Promise<void> {
+        //We need to initialize with the data
+
         if (this.context !== undefined) {
+            let stored: CumulocityTreeItem[] = this.context.workspaceState.get(CumulocityView.cumulocityKey);
+            stored.forEach((current) => {
+                Object.setPrototypeOf(current, Object.getPrototypeOf(CumulocityView.reference));
+            });
+            this.workspaceList = stored;
+            console.log("WORKSPACE LIST", this.workspaceList);
+
             this.context.subscriptions.push.apply(this.context.subscriptions, [
+                //Refresh the view.
                 vscode.commands.registerCommand("cumulocity.refresh", () => {
                     this.refresh();
                 }),
 
-                vscode.commands.registerCommand("cumulocity.createWorkspace", async () => {
-                    const tenantURL: string | undefined = await vscode.window.showInputBox({
-                        placeHolder: "enter cumulocity tenant url",
-                    });
-                    const user: string | undefined = await vscode.window.showInputBox({
-                        placeHolder: "enter user",
-                    });
-                    const password: string | undefined = await vscode.window.showInputBox({
-                        placeHolder: "enter password",
-                    });
-                    if (tenantURL && password) {
-                        const client = await Client.authenticate(
-                            {
-                                user: user,
-                                password: password,
-                            },
-                            tenantURL
-                        );
-
-                        const filter: object = {
-                            pageSize: 2000,
-                            withTotalPages: true,
-                        };
-
-                        const query = {
-                            name: "*",
-                        };
-
-                        const { data, res, paging } = await client.inventory.listQueryDevices(query, filter);
-
-                        console.log("RES", res);
-
-                        if (data) {
-                            console.log("DATA", data);
-                        }
-                        if (paging) {
-                            console.log("PAGING", paging);
-                            const nextPage = await paging.next();
-                            console.log("NEXT", nextPage ? nextPage : "EMPTY");
-                        }
-                    }
-                    this.refresh();
+                //Open a tenant and read in data
+                vscode.commands.registerCommand("cumulocity.createTenantRecord", async () => {
+                    await this.createTenantRecord();
                 }),
 
-                vscode.commands.registerCommand("cumulocity.editWorkspace", async (element?: CumulocityTreeItem) => {
+                //allow workspace to be edited
+                vscode.commands.registerCommand("cumulocity.deleteWorkspace", async (element?: CumulocityTreeItem) => {
                     if (element) {
-                        //Show the workspace details
+                        await this.deleteTenantRecord(element);
                     }
                 }),
             ]);
+        } else {
+            console.log("No context! - error initializing extension");
         }
     }
 
@@ -109,7 +118,10 @@ export class CumulocityView implements vscode.TreeDataProvider<CumulocityTreeIte
     }
 
     async getChildren(element?: CumulocityTreeItem): Promise<undefined | CumulocityTreeItem[]> {
+        console.log(element);
         if (element instanceof CumulocityTreeItem) {
+            console.log(<CumulocityTreeItem>element);
+            element.scanDevices(this.context); //needs access to secrets
             return element.children;
         }
         return this.workspaceList;

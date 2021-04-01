@@ -10,11 +10,10 @@ import { CumulocityView } from "./cumulocity-view";
 export function activate(context: vscode.ExtensionContext) {
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
-    console.log('"cumulocity-helper" is now active!');
+    console.log('"cumulocity-helper" Starting');
 
-    context.subscriptions.push(
-        vscode.window.registerTreeDataProvider("cumulocity-view", new CumulocityView(context))
-    );
+    context.subscriptions.push(vscode.window.registerTreeDataProvider("cumulocity-view", new CumulocityView(context)));
+    console.log('"cumulocity-helper" Initialized');
 }
 
 // this method is called when your extension is deactivated

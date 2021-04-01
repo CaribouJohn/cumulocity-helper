@@ -24,7 +24,7 @@
                 }
             },
             {
-                "command": "cumulocity.editWorkspace",
+                "command": "cumulocity.deleteWorkspace",
                 "title": "More Info",
                 "icon": {
                     "light": "resources/light/info.svg",
@@ -32,7 +32,7 @@
                 }
             },
             {
-                "command": "cumulocity.createWorkspace",
+                "command": "cumulocity.createTenantRecord",
                 "title": "Create workspace",
                 "icon": {
                     "light": "resources/light/library_add.svg",
@@ -40,19 +40,6 @@
                 }
             }
         ],
-        "configuration": {
-            "title": "Cumulocity Helper Settings",
-            "properties": {
-                "cumulocity.host": {
-                    "type": "string",
-                    "description": "Host."
-                },
-                "cumulocity.test": {
-                    "type": "string",
-                    "description": "Place holder until I know more."
-                }
-            }
-        },
         "views": {
             "explorer": [
                 {
@@ -70,14 +57,14 @@
                 },
                 {
                     "when": "view == cumulocity-view",
-                    "command": "cumulocity.createWorkspace",
+                    "command": "cumulocity.createTenantRecord",
                     "group": "navigation"
                 }
             ],
             "view/item/context": [
                 {
                     "when": "view == cumulocity-view && viewItem == workspace",
-                    "command": "cumulocity.editWorkspace",
+                    "command": "cumulocity.deleteWorkspace",
                     "group": "inline@1"
                 }
             ]
