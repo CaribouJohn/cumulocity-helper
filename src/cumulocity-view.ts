@@ -10,7 +10,7 @@ export class CumulocityView implements vscode.TreeDataProvider<CumulocityTreeIte
 
     public static cumulocityKey: string = "cumulocity.data";
     public static tenantsKey: string = "tenantsKey";
-    private static reference: CumulocityTreeItem = new CumulocityTreeItem("ref", "ref", "ref");
+    private static reference: CumulocityTreeItem = new CumulocityTreeItem("ref", "ref", "ref", "ref");
 
     private workspaceList: CumulocityTreeItem[] = [];
     constructor(private context: vscode.ExtensionContext) {
@@ -38,7 +38,7 @@ export class CumulocityView implements vscode.TreeDataProvider<CumulocityTreeIte
                     //store it
                     this.context.secrets.store(`${tenantURL}@${user}`, password);
 
-                    let c: CumulocityTreeItem = new CumulocityTreeItem(tenantURL, `${tenantURL}@${user}`, "workspace");
+                    let c: CumulocityTreeItem = new CumulocityTreeItem(tenantURL, "", `${tenantURL}@${user}`, "workspace");
 
                     //c.context = this.context;
 
@@ -118,10 +118,10 @@ export class CumulocityView implements vscode.TreeDataProvider<CumulocityTreeIte
     }
 
     async getChildren(element?: CumulocityTreeItem): Promise<undefined | CumulocityTreeItem[]> {
-        console.log(element);
         if (element instanceof CumulocityTreeItem) {
             console.log(<CumulocityTreeItem>element);
-            element.scanDevices(this.context); //needs access to secrets
+            await element.scanDevices(this.context); //needs access to secrets
+            console.log("element clicked", element);
             return element.children;
         }
         return this.workspaceList;
