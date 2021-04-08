@@ -2,6 +2,7 @@
 
 import { Client, IManagedObject, IResultList } from "@c8y/client";
 import * as vscode from "vscode";
+import * as _ from "lodash";
 
 export class CumulocityTreeItem extends vscode.TreeItem {
     public children: CumulocityTreeItem[] = [];
@@ -13,8 +14,23 @@ export class CumulocityTreeItem extends vscode.TreeItem {
         public managedObject: IManagedObject | undefined = undefined
     ) {
         super(label, vscode.TreeItemCollapsibleState.Collapsed);
-    }
+        let color = new vscode.ThemeColor("debugIcon.restartForeground"); //green icon
+        if (_.has(managedObject, "c8y_Connection")) {
+            if (managedObject.c8y_Connection.status === "DISCONNECTED") {
+                color = new vscode.ThemeColor("debugIcon.stopForeground"); //red icon
+            }
+        }
 
+        if (contextValue === "workspace") {
+            this.iconPath = new vscode.ThemeIcon("book", color);
+        } else if (contextValue === "group") {
+            this.iconPath = new vscode.ThemeIcon("list-tree", color);
+        } else if (contextValue === "device") {
+            this.iconPath = new vscode.ThemeIcon("circuit-board", color);
+        } else {
+            this.iconPath = new vscode.ThemeIcon("info", color);
+        }
+    }
     // iconPath = {
     //     light: path.join(this.resourceDir, "light", "folder.svg"),
     //     dark: path.join(this.resourceDir, "dark", "folder.svg"),
@@ -63,7 +79,13 @@ export class CumulocityTreeItem extends vscode.TreeItem {
         if (result.res.status === 200) {
             do {
                 result.data.forEach((mo) => {
-                    let c: CumulocityTreeItem = new CumulocityTreeItem(mo.name, mo.id, this.connString, "addition", mo);
+                    let nodeType = "addition";
+                    if (_.has(mo, "c8y_IsDeviceGroup")) {
+                        nodeType = "group";
+                    } else if (_.has(mo, "c8y_IsDevice")) {
+                        nodeType = "device";
+                    }
+                    let c: CumulocityTreeItem = new CumulocityTreeItem(mo.name, mo.id, this.connString, nodeType, mo);
                     retrieved.push(c);
                 });
 
@@ -79,7 +101,15 @@ export class CumulocityTreeItem extends vscode.TreeItem {
         if (result.res.status === 200) {
             do {
                 result.data.forEach((mo) => {
-                    let c: CumulocityTreeItem = new CumulocityTreeItem(mo.name, mo.id, this.connString, "asset", mo);
+                    let nodeType = "asset";
+                    if (_.has(mo, "c8y_IsDeviceGroup")) {
+                        nodeType = "group";
+                    } else if (_.has(mo, "c8y_IsDevice")) {
+                        nodeType = "device";
+                    } else if (mo.type === "c8y_PrivateSmartRule") {
+                        nodeType = "rule";
+                    }
+                    let c: CumulocityTreeItem = new CumulocityTreeItem(mo.name, mo.id, this.connString, nodeType, mo);
                     retrieved.push(c);
                 });
 
@@ -95,7 +125,11 @@ export class CumulocityTreeItem extends vscode.TreeItem {
         if (result.res.status === 200) {
             do {
                 result.data.forEach((mo) => {
-                    let c: CumulocityTreeItem = new CumulocityTreeItem(mo.name, mo.id, this.connString, "device", mo);
+                    let nodeType = "device";
+                    if (_.has(mo, "c8y_IsDeviceGroup")) {
+                        nodeType = "group";
+                    }
+                    let c: CumulocityTreeItem = new CumulocityTreeItem(mo.name, mo.id, this.connString, nodeType, mo);
                     retrieved.push(c);
                 });
 
