@@ -3,6 +3,7 @@
 import * as vscode from "vscode";
 import { CumulocityTreeItem } from "./cumulocity-items";
 import { Client } from "@c8y/client";
+import { CumulocityViewProvider } from "./cumulocity-detail-view";
 
 export class CumulocityView implements vscode.TreeDataProvider<CumulocityTreeItem> {
     private _onDidChangeTreeData: vscode.EventEmitter<CumulocityTreeItem | undefined> = new vscode.EventEmitter<CumulocityTreeItem | undefined>();
@@ -13,7 +14,7 @@ export class CumulocityView implements vscode.TreeDataProvider<CumulocityTreeIte
     private static reference: CumulocityTreeItem = new CumulocityTreeItem("ref", "ref", "ref", "ref");
 
     private workspaceList: CumulocityTreeItem[] = [];
-    constructor(private context: vscode.ExtensionContext) {
+    constructor(private context: vscode.ExtensionContext, private view: CumulocityViewProvider) {
         //undefined means that there is no folder open and so we should indicate this in the view.
         this.registerCommands(); //do this regardless
     }
@@ -80,10 +81,10 @@ export class CumulocityView implements vscode.TreeDataProvider<CumulocityTreeIte
 
         if (this.context !== undefined) {
             let stored: CumulocityTreeItem[] = this.context.workspaceState.get(CumulocityView.cumulocityKey);
-            stored.forEach((current) => {
-                Object.setPrototypeOf(current, Object.getPrototypeOf(CumulocityView.reference));
-            });
-            this.workspaceList = stored;
+            this.workspaceList = stored.map(
+                (item) => new CumulocityTreeItem(item.label, item.detail, item.connString, item.contextValue, item.managedObject)
+            );
+
             console.log("WORKSPACE LIST", this.workspaceList);
 
             this.context.subscriptions.push.apply(this.context.subscriptions, [
@@ -114,6 +115,7 @@ export class CumulocityView implements vscode.TreeDataProvider<CumulocityTreeIte
     }
 
     getTreeItem(element: CumulocityTreeItem): vscode.TreeItem {
+        this.workspaceList.forEach((item) => (item.children = []));
         return element;
     }
 

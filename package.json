@@ -36,6 +36,10 @@
                 {
                     "id": "cumulocity-view",
                     "name": "Cumulocity"
+                },
+                {
+                    "id": "cumulocity-view-detail",
+                    "name": "Detail"
                 }
             ]
         },
