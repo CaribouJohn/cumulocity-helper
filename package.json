@@ -34,10 +34,12 @@
         "views": {
             "explorer": [
                 {
+                    "type": "tree",
                     "id": "cumulocity-view",
                     "name": "Cumulocity"
                 },
                 {
+                    "type": "webview",
                     "id": "cumulocity-view-detail",
                     "name": "Detail"
                 }

@@ -1,0 +1,7 @@
+.flex-grid {
+  display: flex;
+  flex-flow: row wrap;
+}
+.col {
+  flex: 1;
+}

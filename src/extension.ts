@@ -13,10 +13,15 @@ export function activate(context: vscode.ExtensionContext) {
     // This line of code will only be executed once when your extension is activated
     console.log('"cumulocity-helper" Starting');
     const detailView = new CumulocityViewProvider(context.extensionUri);
-    context.subscriptions.push(vscode.window.registerTreeDataProvider("cumulocity-view", new CumulocityView(context, detailView)));
-    //context.subscriptions.push(vscode.window.registerWebviewViewProvider(CumulocityViewProvider.viewType, detailView));
+    const treeView = new CumulocityView(context, detailView);
+    //context.subscriptions.push(vscode.window.registerTreeDataProvider("cumulocity-view", new CumulocityView(context, detailView)));
+
+    const tree = vscode.window.createTreeView('cumulocity-view', { treeDataProvider: treeView, showCollapseAll: true });
+    tree.onDidChangeSelection(e => detailView.postMessage(e.selection));
+
+    context.subscriptions.push(vscode.window.registerWebviewViewProvider(CumulocityViewProvider.viewType, detailView));
     console.log('"cumulocity-helper" Initialized');
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
