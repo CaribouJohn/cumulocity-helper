@@ -59,6 +59,7 @@ export class CumulocityViewProvider implements WebviewViewProvider {
         const styleResetUri = webview.asWebviewUri(Uri.joinPath(this._extensionUri, "media", "reset.css"));
         const styleVSCodeUri = webview.asWebviewUri(Uri.joinPath(this._extensionUri, "media", "css"));
         const styleMainUri = webview.asWebviewUri(Uri.joinPath(this._extensionUri, "media", "main.css"));
+        const lodash = webview.asWebviewUri(Uri.joinPath(this._extensionUri, "node_modules", "lodash", "lodash.js"));//'node_modules\lodash\lodash.js'
 
         // Use a nonce to only allow a specific script to be run.
         const nonce = getNonce();
@@ -76,8 +77,8 @@ export class CumulocityViewProvider implements WebviewViewProvider {
 				<link href="${styleResetUri}" rel="stylesheet">
 				<link href="${styleVSCodeUri}" rel="stylesheet">
 				<link href="${styleMainUri}" rel="stylesheet">
-
-				<title>Cat Colors</title>
+                <script src="${lodash}"></script>
+				<title>Managed Object Webview</title>
 			</head>
 			<body>
 
@@ -90,6 +91,7 @@ export class CumulocityViewProvider implements WebviewViewProvider {
                         </div>
                     </div>
                 </div>
+                <div id="test"></div>
                 <script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
 			</html>`;

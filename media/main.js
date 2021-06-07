@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 var testObj = {
     "additionParents": {
         "self": "https://industrysolutions.cumulocity.com/inventory/managedObjects/43430173/additionParents",
@@ -137,6 +138,12 @@ window.addEventListener('message', event => {
         fd.innerHTML = fd.innerHTML + createFieldData(f);
     });
 
+    const t = document.getElementById("test");
+    if (_.has(message, "name")) {
+        t.textContent = "lodash works";
+    } else {
+        t.textContent = "lodash failed or name doesn't exist";
+    }
 
 
     fields.forEach((f) => {
