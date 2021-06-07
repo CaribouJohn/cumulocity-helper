@@ -72,9 +72,9 @@ export class CumulocityViewProvider implements WebviewViewProvider {
 					and only allow scripts that have a specific nonce.
 				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				-->
 				<link href="${styleResetUri}" rel="stylesheet">
 				<link href="${styleVSCodeUri}" rel="stylesheet">
-				-->
 				<link href="${styleMainUri}" rel="stylesheet">
 
 				<title>Cat Colors</title>
@@ -90,95 +90,6 @@ export class CumulocityViewProvider implements WebviewViewProvider {
                         </div>
                     </div>
                 </div>
-                <pre id="json"></pre>
-                <script>
-                    fields = [
-                        "name",
-                        "type",
-                        "id",
-                        "owner",
-                        "lastUpdated",
-                        "c8y_IsDeviceGroup",
-                        "childDevices",
-                        "childAssets",
-                        "childAdditions"
-                    ];
-
-
-                    function createHeading(s) {
-                        return [
-                            '<p><b>',
-                            s,
-                            '</p></b>'
-                        ].join('');
-                    }
-
-                    function createFieldData(s) {
-                        //<p id="type"></p>
-                        return [
-                            '<p id=\"',
-                            s,
-                            '\">',
-                            '</p>'
-                        ].join('');
-                    }
-
-                    function populateFromObject(message = testObj) {
-                        console.log(JSON.stringify(message, null, 2));
-                        const h = document.getElementById('heading');
-                        const fd = document.getElementById('fielddata');
-
-                        h.innerHTML = ""
-                        fd.innerHTML = ""
-                        fields.forEach((f) => {
-                            h.innerHTML = h.innerHTML + createHeading(f);
-                            fd.innerHTML = fd.innerHTML + createFieldData(f);
-                        });
-
-
-
-                        fields.forEach((f) => {
-                            console.log("FIELD ", f)
-                            const element = document.getElementById(f);
-                            if (element) {
-                                element.textContent = (f in message) ? message[f] : "undefined";
-                                console.log("FIELD ", f, (f in message), (f in message) ? message[f] : "undefined")
-                            } else {
-                                console.log("MISSING", f)
-                            }
-
-                        });
-                    };
-
-                    window.addEventListener('message', event => {
-                        const message = event.data[0].managedObject; // The JSON data our extension sent
-                        const h = document.getElementById('heading');
-                        const fd = document.getElementById('fielddata');
-
-                        h.innerHTML = ""
-                        fd.innerHTML = ""
-                        fields.forEach((f) => {
-                            h.innerHTML = h.innerHTML + createHeading(f);
-                            fd.innerHTML = fd.innerHTML + createFieldData(f);
-                        });
-
-
-
-                        fields.forEach((f) => {
-                            console.log("FIELD ", f)
-                            const element = document.getElementById(f);
-                            if (element) {
-                                element.textContent = (f in message) ? message[f] : "undefined";
-                                console.log("FIELD ", f, (f in message), (f in message) ? message[f] : "undefined")
-                            } else {
-                                console.log("MISSING", f)
-                            }
-
-                        });
-                    });
-
-
-                </script>
                 <script nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
 			</html>`;
