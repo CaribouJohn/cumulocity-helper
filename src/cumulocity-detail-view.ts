@@ -38,18 +38,6 @@ export class CumulocityViewProvider implements WebviewViewProvider {
             console.log("failed to post message", msg);
         }
     }
-    // public addColor() {
-    //     if (this._view) {
-    //         this._view.show?.(true); // `show` is not implemented in 1.49 but is for 1.50 insiders
-    //         this._view.webview.postMessage({ type: "addColor" });
-    //     }
-    // }
-
-    // public clearColors() {
-    //     if (this._view) {
-    //         this._view.webview.postMessage({ type: "clearColors" });
-    //     }
-    // }
 
     private _getHtmlForWebview(webview: Webview) {
         // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
@@ -84,11 +72,7 @@ export class CumulocityViewProvider implements WebviewViewProvider {
 
                 <div id="data">
                     <h2>Managed Object</h2>
-                    <div class="flex-grid">
-                        <div id="heading" class="col">
-                        </div>
-                        <div id="fielddata" class="col">
-                        </div>
+                    <div id="moGrid" class="grid-container">
                     </div>
                 </div>
                 <div id="test"></div>

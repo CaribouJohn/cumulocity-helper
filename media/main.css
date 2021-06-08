@@ -1,7 +1,8 @@
-.flex-grid {
-  display: flex;
-  flex-flow: row wrap;
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto;
 }
-.col {
-  flex: 1;
+
+.grid-container > div {
+  text-align: left;
 }
