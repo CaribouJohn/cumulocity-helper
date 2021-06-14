@@ -5,6 +5,7 @@
 import * as vscode from "vscode";
 import { CumulocityView } from "./cumulocity-view";
 import { CumulocityViewProvider } from "./cumulocity-detail-view";
+import * as cadk from "cumulocity-adk";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -19,9 +20,22 @@ export function activate(context: vscode.ExtensionContext) {
     const tree = vscode.window.createTreeView('cumulocity-view', { treeDataProvider: treeView, showCollapseAll: true });
     tree.onDidChangeSelection(e => detailView.postMessage(e.selection));
 
+    vscode.commands.registerCommand('cumulocity.createProject', async (uri: vscode.Uri) => {
+        console.log(uri.fsPath);
+        try {
+            let proName = "test";
+            await cadk.createWidget({ name: "test", destination: uri.fsPath, type: "widget" });
+            vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.joinPath(uri, proName));
+        } catch (err) {
+            console.log("ERROR" + err);
+        }
+    });
+
     context.subscriptions.push(vscode.window.registerWebviewViewProvider(CumulocityViewProvider.viewType, detailView));
-    console.log('"cumulocity-helper" Initialized');
+    console.log('"cumulocity-helper-extension" Initialized');
 }
+
+
 
 // this method is called when your extension is deactivated
 export function deactivate() { }

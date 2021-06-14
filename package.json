@@ -1,6 +1,7 @@
 {
     "name": "cumulocity-helper",
     "displayName": "cumulocity-helper",
+    "publisher": "johnheath-sag",
     "description": "",
     "version": "0.0.1",
     "engines": {
@@ -29,6 +30,14 @@
                 "command": "cumulocity.createTenantRecord",
                 "title": "Add Tenant",
                 "icon": "$(add)"
+            },
+            {
+                "command": "cumulocity.createProject",
+                "title": "Create project",
+                "icon": {
+                    "light": "resources/light/library_add.svg",
+                    "dark": "resources/dark/library_add.svg"
+                }
             }
         ],
         "views": {
@@ -46,6 +55,14 @@
             ]
         },
         "menus": {
+            "explorer/context": [
+                {
+                    "title": "Create Widget",
+                    "when": "explorerResourceIsFolder == true",
+                    "command": "cumulocity.createProject",
+                    "group": "navigation"
+                }
+            ],
             "view/title": [
                 {
                     "when": "view == cumulocity-view",
@@ -91,6 +108,7 @@
     },
     "dependencies": {
         "@c8y/client": "^1007.0.36",
+        "cumulocity-adk": "file:../../SoftwareAG/gps",
         "lodash": "^4.17.21"
     }
 }

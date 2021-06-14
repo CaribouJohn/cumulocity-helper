@@ -45,7 +45,7 @@ export class CumulocityViewProvider implements WebviewViewProvider {
 
         // Do the same for the stylesheet.
         const styleResetUri = webview.asWebviewUri(Uri.joinPath(this._extensionUri, "media", "reset.css"));
-        const styleVSCodeUri = webview.asWebviewUri(Uri.joinPath(this._extensionUri, "media", "css"));
+        const styleVSCodeUri = webview.asWebviewUri(Uri.joinPath(this._extensionUri, "media", "vscode.css"));
         const styleMainUri = webview.asWebviewUri(Uri.joinPath(this._extensionUri, "media", "main.css"));
         const lodash = webview.asWebviewUri(Uri.joinPath(this._extensionUri, "node_modules", "lodash", "lodash.js"));//'node_modules\lodash\lodash.js'
 

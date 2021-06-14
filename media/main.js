@@ -193,7 +193,7 @@ window.addEventListener('message', event => {
 function populateFields(message) {
     simpleFields.forEach((f) => {
         const element = document.getElementById(f);
-        if (element) {
+        if (element && message) {
             element.textContent = (f in message) ? message[f] : "undefined";
             console.log("FIELD ", f, (f in message), (f in message) ? message[f] : "undefined");
         } else {
