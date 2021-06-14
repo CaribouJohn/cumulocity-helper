@@ -23,7 +23,7 @@ export class CumulocityViewProvider implements WebviewViewProvider {
         webviewView.webview.onDidReceiveMessage((data) => {
             switch (data.type) {
                 case "colorSelected": {
-                    window.activeTextEditor?.insertSnippet(new SnippetString(`#${data.value}`));
+                    // window.activeTextEditor?.insertSnippet(new SnippetString(`#${data.value}`));
                     break;
                 }
             }

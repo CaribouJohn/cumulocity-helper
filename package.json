@@ -103,11 +103,15 @@
         "eslint": "^7.19.0",
         "glob": "^7.1.6",
         "mocha": "^8.2.1",
-        "typescript": "^4.2.4",
+        "typescript": "^3.4.5",
         "vscode-test": "^1.5.0"
     },
     "dependencies": {
+        "@angular-devkit/build-angular": "^0.803.23",
+        "@angular/compiler-cli": "^8.0.0",
         "@c8y/client": "^1007.0.36",
-        "lodash": "^4.17.21"
+        "cumulocity-adk": "^1.2.1",
+        "lodash": "^4.17.21",
+        "webpack": "^4.6.0"
     }
 }
