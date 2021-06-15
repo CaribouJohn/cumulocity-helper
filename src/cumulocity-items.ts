@@ -138,7 +138,7 @@ export class CumulocityTreeItem extends vscode.TreeItem {
                 }
             } while (result.paging && result.paging.nextPage);
         }
-        console.log("ret", retrieved);
+        //console.log("ret", retrieved);
         return retrieved;
     }
 
@@ -163,7 +163,7 @@ export class CumulocityTreeItem extends vscode.TreeItem {
                     logString += mo.owner ? mo.owner + "|" : "no owner|";
                     logString += mo.childDevices.references.length ? mo.childDevices.references.length + "children " : "";
                     logString += ")";
-                    console.log(mo);
+                    //console.log(mo);
                     let c: CumulocityTreeItem = new CumulocityTreeItem(logString, mo.id, this.connString, "device", mo);
                     retrieved.push(c);
                 });
@@ -206,11 +206,11 @@ export class CumulocityTreeItem extends vscode.TreeItem {
                         }
                     }
                 } catch (e) {
-                    console.log(e);
+                    //console.log(e);
                     return []; //error node possibly? Toast?
                 }
             } else {
-                console.log("Extension context not set on object");
+                console.error("Extension context not set on object");
             }
             return this.children;
         }

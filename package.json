@@ -32,12 +32,19 @@
                 "icon": "$(add)"
             },
             {
-                "command": "cumulocity.createProject",
-                "title": "Create project",
-                "icon": {
-                    "light": "resources/light/library_add.svg",
-                    "dark": "resources/dark/library_add.svg"
-                }
+                "command": "cumulocity.createWidgetInExplorer",
+                "title": "Create widget in chosen directory",
+                "icon": "$(add)"
+            },
+            {
+                "command": "cumulocity.createWidget",
+                "title": "Create widget",
+                "icon": "$(add)"
+            },
+            {
+                "command": "cumulocity.viewManagedObject",
+                "title": "Open managed object",
+                "icon": "$(eye)"
             }
         ],
         "views": {
@@ -50,7 +57,7 @@
                 {
                     "type": "webview",
                     "id": "cumulocity-view-detail",
-                    "name": "Detail"
+                    "name": "Managed object summary"
                 }
             ]
         },
@@ -59,7 +66,7 @@
                 {
                     "title": "Create Widget",
                     "when": "explorerResourceIsFolder == true",
-                    "command": "cumulocity.createProject",
+                    "command": "cumulocity.createWidgetInExplorer",
                     "group": "navigation"
                 }
             ],
@@ -79,6 +86,16 @@
                 {
                     "when": "view == cumulocity-view && viewItem == workspace",
                     "command": "cumulocity.deleteWorkspace",
+                    "group": "inline"
+                },
+                {
+                    "when": "view == cumulocity-view && viewItem == workspace",
+                    "command": "cumulocity.createWidget",
+                    "group": "inline"
+                },
+                {
+                    "when": "view == cumulocity-view && viewItem != workspace",
+                    "command": "cumulocity.viewManagedObject",
                     "group": "inline"
                 }
             ]

@@ -176,7 +176,7 @@ function createFieldData(s) {
 }
 
 function populateFromObject(message = testObj2) {
-    console.log(JSON.stringify(message, null, 2));
+    //console.log(JSON.stringify(message, null, 2));
     const g = document.getElementById('moGrid');
     createEmptyFieldsHTML(g);
     populateFields(message);
@@ -195,9 +195,9 @@ function populateFields(message) {
         const element = document.getElementById(f);
         if (element && message) {
             element.textContent = (f in message) ? message[f] : "undefined";
-            console.log("FIELD ", f, (f in message), (f in message) ? message[f] : "undefined");
+            //console.log("FIELD ", f, (f in message), (f in message) ? message[f] : "undefined");
         } else {
-            console.log("MISSING", f);
+            //console.log("MISSING", f);
         }
     });
 
@@ -206,7 +206,7 @@ function populateFields(message) {
         const element = document.getElementById(f);
         if (f === 'c8y_Connection' || f === 'c8y_Availability') {
             element.textContent = (f in message) ? message[f].status : "undefined";
-            console.log("FIELD ", f, (f in message), (f in message) ? message[f].status : "undefined");
+            //console.log("FIELD ", f, (f in message), (f in message) ? message[f].status : "undefined");
         } else if (f === 'c8y_IsDevice' || f === 'c8y_IsDeviceGroup') {
             element.textContent = (f in message) ? "true" : "false";
         } else if (f.includes("child")) {

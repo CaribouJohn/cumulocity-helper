@@ -33,9 +33,9 @@ export class CumulocityViewProvider implements WebviewViewProvider {
     postMessage(msg: any) {
         if (this._view) {
             this._view.webview.postMessage(msg);
-            console.log("posted message", msg);
+            //console.log("posted message", msg);
         } else {
-            console.log("failed to post message", msg);
+            //console.log("failed to post message", msg);
         }
     }
 
@@ -71,7 +71,6 @@ export class CumulocityViewProvider implements WebviewViewProvider {
 			<body>
 
                 <div id="data">
-                    <h2>Managed Object</h2>
                     <div id="moGrid" class="grid-container">
                     </div>
                 </div>
