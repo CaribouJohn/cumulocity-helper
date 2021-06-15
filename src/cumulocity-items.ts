@@ -158,11 +158,11 @@ export class CumulocityTreeItem extends vscode.TreeItem {
             do {
                 result.data.forEach((mo) => {
                     let logString: string = mo.name;
-                    logString += "(" + mo.id + "|";
-                    logString += mo.type ? mo.type + "|" : "no type|";
-                    logString += mo.owner ? mo.owner + "|" : "no owner|";
-                    logString += mo.childDevices.references.length ? mo.childDevices.references.length + "children " : "";
-                    logString += ")";
+                    // logString += "(" + mo.id + "|";
+                    // logString += mo.type ? mo.type + "|" : "no type|";
+                    // logString += mo.owner ? mo.owner + "|" : "no owner|";
+                    // logString += mo.childDevices.references.length ? mo.childDevices.references.length + "children " : "";
+                    // logString += ")";
                     //console.log(mo);
                     let c: CumulocityTreeItem = new CumulocityTreeItem(logString, mo.id, this.connString, "device", mo);
                     retrieved.push(c);
