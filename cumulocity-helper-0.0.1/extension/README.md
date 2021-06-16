@@ -1,2 +1,0 @@
-# cumulocity-helper README
-
