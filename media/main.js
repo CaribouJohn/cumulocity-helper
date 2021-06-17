@@ -153,7 +153,8 @@ var compositeFields = [
     "c8y_Connection",
     "c8y_IsDevice",
     "c8y_ActiveAlarmsStatus",
-    "c8y_Availability"
+    "c8y_Availability",
+    "c8y_SupportedOperations"
 ];
 
 
@@ -209,15 +210,28 @@ function populateFields(message) {
             //console.log("FIELD ", f, (f in message), (f in message) ? message[f].status : "undefined");
         } else if (f === 'c8y_IsDevice' || f === 'c8y_IsDeviceGroup') {
             element.textContent = (f in message) ? "true" : "false";
+        } else if (f === 'c8y_SupportedOperations') {
+            if (f in message) {
+                if (message[f].length > 0) {
+                    message[f].forEach(r => {
+                        element.textContent += `${r} `;
+                    });
+
+                } else {
+                    element.textContent = "empty";
+                }
+            } else {
+                element.textContent = "undefined";
+            }
         } else if (f.includes("child")) {
             if (f in message) {
                 let refs = message[f].references;
                 if (refs.length > 0) {
                     refs.forEach(r => {
                         if ("name" in r.managedObject) {
-                            element.textContent += `${r.managedObject.name},`;
+                            element.textContent += `${r.managedObject.name} `;
                         } else {
-                            element.textContent += `${r.managedObject.id},`;
+                            element.textContent += `${r.managedObject.id} `;
                         }
                     });
 
