@@ -2,6 +2,10 @@
 
 # cumulocity-helper extension to aid development
 
+<img src="images/gps.png" alt="drawing" width="200"/>
+
+<sub><sup>Developed by Global Presales (Software AG)</sup></sub>
+
 ## Feature Summary
 
 -   Display Managed objects and hierarchy from multiple tenants
