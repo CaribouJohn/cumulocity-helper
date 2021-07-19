@@ -20,20 +20,46 @@ export class CumulocityView implements vscode.TreeDataProvider<CumulocityTreeIte
     }
 
     public async createWidgetInExplorer(uri: vscode.Uri) {
-        const widgetName: string | undefined = await vscode.window.showInputBox({
-            placeHolder: "Enter the widget name you want to use",
-            prompt: "Enter the widget name, E.G. my.cool.widget",
-        });
-        if (widgetName) {
-            //console.log(uri.fsPath);
-            try {
-                await cadk.createWidget({ name: widgetName, destination: uri.fsPath, type: "widget" });
-                vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.joinPath(uri, widgetName));
-            } catch (err) {
-                //console.log("ERROR" + err);
+        vscode.window.withProgress({
+            location: vscode.ProgressLocation.Notification,
+            cancellable: false,
+            title: 'Creating Widget Workspace'
+        }, async (progress) => {
+            progress.report({ increment: 0, message: `Choose widget name` });
+            const widgetName: string | undefined = await vscode.window.showInputBox({
+                placeHolder: "Enter the widget name you want to use",
+                prompt: "Enter the widget name, E.G. my.cool.widget",
+            });
+            if (widgetName) {
+                let interval: NodeJS.Timer;
+                try {
+                    //fire function every 10 seconds
+                    progress.report({ increment: 1, message: `Creating ${widgetName} please wait` });
+                    let counter: number = 0;
+                    let interval: NodeJS.Timer = setInterval(() => {
+                        progress.report({ increment: counter, message: `Creating ${widgetName} please wait` });
+                        counter++;
+                        if (counter > 90) {
+                            counter = 90;
+                        }
+                    }, 4000);
+
+                    await cadk.createWidget({ name: widgetName, destination: uri.fsPath, type: "widget" });
+                    clearInterval(interval);
+                    progress.report({ increment: 100, message: `Opening ${widgetName}` });
+                    vscode.commands.executeCommand("vscode.openFolder", vscode.Uri.joinPath(uri, widgetName));
+
+                } catch (err) {
+                    if (interval) {
+                        clearInterval(interval);
+                    }
+                    progress.report({ increment: 100, message: `Error creating ${widgetName}` });
+                }
             }
-        }
+        });
+
     }
+
 
     public async createWidget(element?: CumulocityTreeItem) {
         const options: vscode.OpenDialogOptions = {
@@ -170,7 +196,7 @@ export class CumulocityView implements vscode.TreeDataProvider<CumulocityTreeIte
 
     refresh(): void {
         this._onDidChangeTreeData.fire(undefined);
-    }
+    };
 
     getTreeItem(element: CumulocityTreeItem): vscode.TreeItem {
         this.workspaceList.forEach((item) => (item.children = []));

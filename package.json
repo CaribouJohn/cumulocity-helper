@@ -3,7 +3,7 @@
     "displayName": "cumulocity-helper",
     "publisher": "JohnHeath",
     "description": "",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "repository": {
         "type": "git",
         "url": "https://github.com/CaribouJohn/cumulocity-helper"
@@ -16,6 +16,7 @@
     ],
     "main": "./out/extension.js",
     "activationEvents": [
+        "onCommand:cumulocity.createWidgetInExplorer",
         "onView:cumulocity-view"
     ],
     "contributes": {
@@ -131,7 +132,7 @@
         "@angular-devkit/build-angular": "^0.803.23",
         "@angular/compiler-cli": "^8.0.0",
         "@c8y/client": "^1007.0.36",
-        "cumulocity-adk": "^1.2.2",
+        "cumulocity-adk": "^1.2.4",
         "lodash": "^4.17.21",
         "webpack": "^4.6.0"
     }
