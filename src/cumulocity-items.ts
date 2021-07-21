@@ -206,7 +206,7 @@ export class CumulocityTreeItem extends vscode.TreeItem {
                         }
                     }
                 } catch (e) {
-                    //console.log(e);
+                    console.log(e.res.statusText);
                     return []; //error node possibly? Toast?
                 }
             } else {

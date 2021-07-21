@@ -95,11 +95,10 @@ export class CumulocityView implements vscode.TreeDataProvider<CumulocityTreeIte
                 });
                 if (password) {
                     //store it
-                    this.context.secrets.store(`${tenantURL}@${user}`, password);
+                    await this.context.secrets.delete(`${tenantURL}@${user}`);
+                    await this.context.secrets.store(`${tenantURL}@${user}`, password);
 
                     let c: CumulocityTreeItem = new CumulocityTreeItem(tenantURL, "", `${tenantURL}@${user}`, "workspace");
-
-                    //c.context = this.context;
 
                     if (this.workspaceList) {
                         this.workspaceList.push(c);
@@ -108,9 +107,7 @@ export class CumulocityView implements vscode.TreeDataProvider<CumulocityTreeIte
                     }
 
                     try {
-                        //console.log(JSON.stringify(this.workspaceList));
                         this.context.workspaceState.update(CumulocityView.cumulocityKey, this.workspaceList);
-                        //console.log("value added");
                         this.refresh();
                     } catch (e) {
                         console.error(e);
